@@ -91,7 +91,7 @@ function BrewItem({ method, index }: { method: BrewMethod; index: number }) {
             style={{ transitionDelay: `${(index + 1) * 0.1}s` }}
         >
             {/* Image */}
-            <div className="brew-img relative h-[200px] overflow-hidden flex-shrink-0 md:h-auto md:w-[45%]">
+            <div className="brew-img relative h-[180px] overflow-hidden flex-shrink-0 sm:h-[200px] md:h-auto md:w-[45%]">
                 <img
                     src={method.image}
                     alt={method.title}
@@ -107,7 +107,7 @@ function BrewItem({ method, index }: { method: BrewMethod; index: number }) {
             </div>
 
             {/* Body */}
-            <div className="brew-body relative flex flex-1 flex-col justify-center p-6">
+            <div className="brew-body relative flex flex-1 flex-col justify-center p-5 sm:p-6">
                 {/* Accent bar */}
                 <div className={`brew-accent absolute top-0 ${isEven ? 'right-0' : 'left-0'} h-0 w-[3px] rounded-sm bg-gradient-to-b from-[#f3b079] to-[#8C6239] transition-all duration-500 group-hover:h-full`} />
 

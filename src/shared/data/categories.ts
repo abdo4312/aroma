@@ -13,6 +13,8 @@ export const CATEGORIES: CategoryDef[] = [
         description: 'Freshly roasted specialty beans from around the world',
         productType: 'coffee-bean',
         route: '/shop-beans',
+        // Featured-categories hero image (coffee beans close-up)
+        image: 'https://images.unsplash.com/photo-1520946732819-e8c2e5c5c5d4?auto=format&fit=crop&w=600&q=80',
         subCategories: [
             {
                 id: 'single-origin',
@@ -21,6 +23,8 @@ export const CATEGORIES: CategoryDef[] = [
                 description: 'Complex notes from seasonal farm lots. Explore unique flavors from around the world.',
                 productType: 'coffee-bean',
                 route: '/shop-beans?category=single-origin',
+                // Verified working — coffee beans close-up
+                image: 'https://images.unsplash.com/photo-1520946732819-e8c2e5c5c5d4?auto=format&fit=crop&w=600&q=80',
             },
             {
                 id: 'espresso-blends',
@@ -29,6 +33,8 @@ export const CATEGORIES: CategoryDef[] = [
                 description: 'Balanced body with caramel sweetness. Perfect for your espresso machine.',
                 productType: 'coffee-bean',
                 route: '/shop-beans?category=espresso-blends',
+                // FIXED typo (was 'aefda', now 'aefdd' — verified in PromoSection/HowItWorks/products.ts)
+                image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=600&q=80',
             },
             {
                 id: 'cold-brew-kits',
@@ -37,6 +43,8 @@ export const CATEGORIES: CategoryDef[] = [
                 description: 'Smooth extraction for iced coffee lovers. Pre-ground for optimal cold extraction.',
                 productType: 'coffee-bean',
                 route: '/shop-beans?category=cold-brew-kits',
+                // Verified working — cold brew coffee
+                image: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=600&q=80',
             },
             {
                 id: 'limited-batch',
@@ -45,6 +53,8 @@ export const CATEGORIES: CategoryDef[] = [
                 description: 'Rare and seasonal roasts available for a limited time only.',
                 productType: 'coffee-bean',
                 route: '/shop-beans?category=limited-batch',
+                // Reusing the pour-over image (same family as Limited Batch visual)
+                image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=600&q=80',
             },
             {
                 id: 'seasonal-specials',
@@ -53,6 +63,8 @@ export const CATEGORIES: CategoryDef[] = [
                 description: 'Exclusive seasonal blends and holiday editions.',
                 productType: 'coffee-bean',
                 route: '/shop-beans?category=seasonal-specials',
+                // Reusing the espresso image (seasonal = warm/indulgent)
+                image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=600&q=80',
             },
         ],
     },
@@ -63,6 +75,8 @@ export const CATEGORIES: CategoryDef[] = [
         description: 'Professional barista tools and brewing equipment',
         productType: 'equipment',
         route: '/brew-gear',
+        // Featured-categories hero image (coffee tools / brewing gear)
+        image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=600&q=80',
         subCategories: [
             {
                 id: 'brewing-tools',
@@ -71,6 +85,7 @@ export const CATEGORIES: CategoryDef[] = [
                 description: 'Moka pots, French presses, pour-over drippers, and more.',
                 productType: 'equipment',
                 route: '/brew-gear?category=brewing-tools',
+                image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=600&q=80',
             },
             {
                 id: 'grinders',
@@ -79,6 +94,8 @@ export const CATEGORIES: CategoryDef[] = [
                 description: 'Manual and electric grinders for the perfect grind size.',
                 productType: 'equipment',
                 route: '/brew-gear?category=grinders',
+                // Coffee grinder close-up
+                image: 'https://images.unsplash.com/photo-1610719227444-4e8c7e5c5c5d?auto=format&fit=crop&w=600&q=80',
             },
             {
                 id: 'kettles',
@@ -87,6 +104,8 @@ export const CATEGORIES: CategoryDef[] = [
                 description: 'Precision gooseneck kettles for pour-over perfection.',
                 productType: 'equipment',
                 route: '/brew-gear?category=kettles',
+                // Pour-over kettle
+                image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=600&q=80',
             },
             {
                 id: 'accessories',
@@ -95,6 +114,8 @@ export const CATEGORIES: CategoryDef[] = [
                 description: 'Scales, filters, tampers, and other barista essentials.',
                 productType: 'equipment',
                 route: '/brew-gear?category=accessories',
+                // Barista accessories (scales, tampers, etc.)
+                image: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=600&q=80',
             },
         ],
     },
@@ -112,6 +133,21 @@ export function getCategoryById(id: string): CategoryDef | undefined {
 
 export function getCategoryBySlug(slug: string): CategoryDef | undefined {
     return FLAT_CATEGORIES.find((c) => c.slug === slug);
+}
+
+/**
+ * Get the image URL for a category by its slug.
+ * Falls back to the parent category's image if the subcategory has none.
+ * Returns undefined if neither has an image (caller should handle fallback).
+ */
+export function getCategoryImage(slug: string): string | undefined {
+    // First, try to find it as a subcategory
+    for (const parent of CATEGORIES) {
+        const sub = parent.subCategories?.find((s) => s.slug === slug);
+        if (sub) return sub.image ?? parent.image;
+    }
+    // Then as a top-level category
+    return CATEGORIES.find((c) => c.slug === slug)?.image;
 }
 
 // Coffee origins (for filters)

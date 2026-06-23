@@ -1,41 +1,47 @@
 import { useNavigate } from 'react-router-dom'
 import { ArrowUpRight } from 'lucide-react'
 import { handleImageError } from '@/shared/utils/imageFallback'
+import { CATEGORIES } from '@/shared/data/categories'
 
-const categories = [
-  {
-    name: 'Single-Origin Beans',
-    description: 'Complex notes from seasonal farm lots.',
-    tag: 'Single Origin',
-    path: '/shop-beans?category=Single-Origin Beans',
-    image: 'https://images.unsplash.com/photo-1520946732819-e8c2e5c5c5d4?auto=format&fit=crop&w=600&q=80',
-  },
-  {
-    name: 'Espresso Blends',
-    description: 'Balanced body with caramel sweetness.',
-    tag: 'Espresso',
-    path: '/shop-beans?category=Espresso Blends',
-    // FIXED: was 'aefda' (typo) → 'aefdd' (verified working in PromoSection/HowItWorks/products.ts)
-    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=600&q=80',
-  },
-  {
-    name: 'Cold Brew Kits',
-    description: 'Smooth extraction for iced coffee lovers.',
-    tag: 'Cold Brew',
-    path: '/shop-beans?category=Cold Brew Kits',
-    image: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=600&q=80',
-  },
-  {
-    name: 'Coffee Tools',
-    description: 'Grinders, drippers, and barista essentials.',
-    tag: 'Equipment',
-    path: '/brew-gear',
-    image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=600&q=80',
-  },
-]
-
+/**
+ * FeaturedCategories
+ * =================
+ * Renders the 4 category cards on the home page.
+ *
+ * Data source: now reads from the central CATEGORIES array
+ * (src/shared/data/categories.ts) instead of a local hardcoded array.
+ * This means a broken image can be fixed in ONE place.
+ *
+ * The 4 cards we display:
+ *   1. Single-Origin Beans  (subcategory of 'coffee-beans')
+ *   2. Espresso Blends      (subcategory of 'coffee-beans')
+ *   3. Cold Brew Kits       (subcategory of 'coffee-beans')
+ *   4. Equipment            (top-level category — used as "Coffee Tools")
+ */
 export function FeaturedCategories() {
   const navigate = useNavigate()
+
+  // Pick the 4 categories we want to feature on the home page.
+  // We read from the central source of truth and add display-only metadata
+  // (tag) that doesn't belong in the data layer.
+  const featuredCategories = [
+    {
+      ...CATEGORIES[0].subCategories![0], // Single-Origin Beans
+      tag: 'Single Origin',
+    },
+    {
+      ...CATEGORIES[0].subCategories![1], // Espresso Blends
+      tag: 'Espresso',
+    },
+    {
+      ...CATEGORIES[0].subCategories![2], // Cold Brew Kits
+      tag: 'Cold Brew',
+    },
+    {
+      ...CATEGORIES[1], // Equipment (top-level)
+      tag: 'Equipment',
+    },
+  ]
 
   return (
     <section className="rounded-[1.8rem] bg-white/20 p-6 shadow-[0_24px_70px_-45px_rgba(72,45,32,0.85)] backdrop-blur-xl md:p-8">
@@ -50,10 +56,10 @@ export function FeaturedCategories() {
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-        {categories.map((category, i) => (
+        {featuredCategories.map((category, i) => (
           <article
-            key={category.name}
-            onClick={() => navigate(category.path)}
+            key={category.id}
+            onClick={() => navigate(category.route)}
             className="group relative cursor-pointer overflow-hidden rounded-3xl aspect-square shadow-[0_8px_30px_-12px_rgba(72,45,32,0.4)] transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_24px_60px_-16px_rgba(72,45,32,0.65)]"
             style={{ transitionDelay: `${i * 0.1}s` }}
           >

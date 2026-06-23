@@ -46,10 +46,10 @@ export function PromoSection() {
             </span>
           </div>
 
-          {/* Title */}
-          <h2 className="mb-3 text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
+          {/* Title — badge wraps below on mobile to prevent overflow */}
+          <h2 className="mb-3 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl lg:text-5xl">
             Golden Hour Roast
-            <span className="ml-3 inline-flex items-center gap-1 rounded-xl bg-[#f3b079] px-3 py-1 text-lg font-extrabold text-[#3f2518] md:text-xl">
+            <span className="mt-2 block w-fit items-center gap-1 rounded-xl bg-[#f3b079] px-3 py-1 text-base font-extrabold text-[#3f2518] sm:ml-3 sm:inline-flex sm:mt-0 sm:text-lg md:text-xl">
               <Sparkles className="h-4 w-4" />
               25% OFF
             </span>

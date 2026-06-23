@@ -141,5 +141,11 @@ export interface CategoryDef {
     description: string;
     productType: ProductType;
     route: string;             // e.g. '/shop-beans?category=single-origin'
+    /**
+     * Optional image URL for the category card.
+     * Centralized here so a broken image can be fixed in ONE place
+     * instead of being scattered across multiple component files.
+     */
+    image?: string;
     subCategories?: CategoryDef[];
 }

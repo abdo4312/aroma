@@ -141,6 +141,7 @@ function FilterRadio({
 
 export function ShopBeansPage() {
     const [searchParams, setSearchParams] = useSearchParams()
+    const [isFiltersOpen, setIsFiltersOpen] = useState(false)
 
     const categoryFromUrl = searchParams.get('category') || ''
     const searchQuery = searchParams.get('search') || ''
@@ -440,11 +441,14 @@ export function ShopBeansPage() {
                         )}
                     </div>
 
-                    {/* Right controls */}
-                    <div className="flex items-center gap-3">
+                    {/* Right controls — wraps on narrow mobile screens to prevent overflow */}
+                    <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
                         <button
-                            onClick={() => document.getElementById('filters-sidebar')?.classList.toggle('hidden')}
+                            onClick={() => setIsFiltersOpen(true)}
                             className="flex items-center gap-2 rounded-xl border border-white/50 bg-white/30 px-4 py-2.5 text-sm font-medium text-[#412619] backdrop-blur-xl transition-all duration-300 hover:bg-white/45 md:hidden"
+                            aria-label="Open filters"
+                            aria-expanded={isFiltersOpen}
+                            aria-controls="filters-sidebar"
                         >
                             <SlidersHorizontal className="h-4 w-4" />
                             Filters
@@ -497,14 +501,29 @@ export function ShopBeansPage() {
                 {/* ══════════ Main Content ══════════ */}
                 <div id="products-grid" className="flex gap-8">
 
-                    {/* Filter Sidebar */}
+                    {/* ═══ Mobile Filter Backdrop ═══ */}
+                    {isFiltersOpen && (
+                        <div
+                            className="fixed inset-0 z-40 bg-[#2e1a12]/50 backdrop-blur-sm md:hidden"
+                            onClick={() => setIsFiltersOpen(false)}
+                            aria-hidden="true"
+                        />
+                    )}
+
+                    {/* Filter Sidebar — React-driven (was using DOM classList.toggle) */}
                     <aside
                         id="filters-sidebar"
-                        className="hidden absolute left-0 right-0 top-0 z-50 rounded-3xl bg-[#FAF7F2]/98 p-6 backdrop-blur-2xl md:static md:block md:w-64 md:bg-transparent md:p-0 md:backdrop-blur-none"
+                        className={`absolute left-0 right-0 top-0 z-50 rounded-3xl bg-[#FAF7F2]/98 p-6 backdrop-blur-2xl transition-transform duration-300 md:static md:block md:w-64 md:bg-transparent md:p-0 md:backdrop-blur-none md:transition-none ${isFiltersOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+                            }`}
+                        aria-hidden={!isFiltersOpen && window.innerWidth < 768}
                     >
                         <div className="mb-5 flex items-center justify-between md:hidden">
                             <h3 className="text-lg font-semibold text-[#3f2518]">Filters</h3>
-                            <button onClick={() => document.getElementById('filters-sidebar')?.classList.add('hidden')}>
+                            <button
+                                onClick={() => setIsFiltersOpen(false)}
+                                className="rounded-full p-1 hover:bg-[#8c6239]/10"
+                                aria-label="Close filters"
+                            >
                                 <X className="h-5 w-5 text-[#412619]" />
                             </button>
                         </div>

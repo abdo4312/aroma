@@ -73,11 +73,15 @@ export function HomeFooter() {
         style={{ '--blob-duration': '22s', '--blob-delay': '-11s' } as React.CSSProperties}
       />
 
-      {/* ── Content ── */}
-      <div className="relative z-20 grid gap-8 rounded-[1.7rem] bg-[linear-gradient(125deg,rgba(255,255,255,0.55),rgba(255,255,255,0.12))] p-6 md:grid-cols-[1.3fr_1fr_1fr_1.2fr] md:p-10">
+      {/* ── Content ──
+          Mobile fixes:
+          - padding reduced on mobile (p-5 → sm:p-6 → md:p-10)
+          - text-left is now the default (was text-right on mobile, which
+            looked odd for an English LTR site — Arabic sites use RTL) */}
+      <div className="relative z-20 grid gap-8 rounded-[1.7rem] bg-[linear-gradient(125deg,rgba(255,255,255,0.55),rgba(255,255,255,0.12))] p-5 text-left sm:p-6 md:grid-cols-[1.3fr_1fr_1fr_1.2fr] md:p-10">
 
         {/* ── Column 1: Brand ── */}
-        <div className="text-right md:text-left">
+        <div>
           {/* Logo */}
           <div className="inline-flex items-center gap-2.5 rounded-xl border border-white/50 bg-white/40 px-3.5 py-2 shadow-[0_8px_25px_-12px_rgba(72,45,32,0.5)] backdrop-blur-md">
             <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[#5f3a26] text-[#fff2e2] shadow-[0_4px_12px_-4px_rgba(95,58,38,0.6)]">
@@ -93,8 +97,8 @@ export function HomeFooter() {
             because every cup deserves to be extraordinary.
           </p>
 
-          {/* Social Icons */}
-          <div className="mt-5 flex items-center gap-2 md:justify-start justify-end">
+          {/* Social Icons — left-aligned on all screens now (was right on mobile) */}
+          <div className="mt-5 flex items-center gap-2">
             {socials.map((s) => (
               <a
                 key={s.label}
@@ -111,7 +115,7 @@ export function HomeFooter() {
         </div>
 
         {/* ── Column 2: Quick Links ── */}
-        <div className="text-right md:text-left">
+        <div>
           <h3 className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-[#6f4f3b]">
             <span className="inline-block h-px w-4 bg-[#c4956a]/60" />
             Quick Links
@@ -132,7 +136,7 @@ export function HomeFooter() {
         </div>
 
         {/* ── Column 3: Categories ── */}
-        <div className="text-right md:text-left">
+        <div>
           <h3 className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-[#6f4f3b]">
             <span className="inline-block h-px w-4 bg-[#c4956a]/60" />
             Categories
@@ -153,7 +157,7 @@ export function HomeFooter() {
         </div>
 
         {/* ── Column 4: Contact Card ── */}
-        <div className="text-right md:text-left">
+        <div>
           <h3 className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-[#6f4f3b]">
             <span className="inline-block h-px w-4 bg-[#c4956a]/60" />
             Get in Touch
@@ -219,7 +223,7 @@ export function HomeFooter() {
       </div>
 
       {/* ── Bottom Bar ── */}
-      <div className="relative z-20 mx-2 mb-1 flex flex-col items-center justify-between gap-3 rounded-2xl border-t border-white/30 bg-white/15 px-6 py-4 backdrop-blur-md sm:flex-row">
+      <div className="relative z-20 mx-2 mb-1 flex flex-col items-center justify-between gap-3 rounded-2xl border-t border-white/30 bg-white/15 px-5 py-4 backdrop-blur-md sm:flex-row sm:px-6">
         <p className="flex items-center gap-1.5 text-xs text-[#6f503d]">
           © 2026 Aroma Corner. Crafted with
           <Heart className="inline h-3 w-3 text-[#b5544a] footer-heart-pulse" />
