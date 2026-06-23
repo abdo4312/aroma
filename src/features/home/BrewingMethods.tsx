@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Clock, Layers, Droplets, Grid3x3, Zap, ArrowRight } from 'lucide-react';
+import { handleImageError } from '@/shared/utils/imageFallback';
 
 interface BrewMethod {
     num: string;
@@ -31,7 +32,8 @@ const brewMethods: BrewMethod[] = [
         desc: 'Rich, concentrated, and versatile. The foundation for lattes, cappuccinos, and all espresso-based drinks you love.',
         time: '25-30 sec',
         grind: 'Fine Grind',
-        image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefda?w=600&q=80',
+        // FIXED: was 'aefda' (typo) → 'aefdd' (verified working)
+        image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=600&q=80',
     },
     {
         num: '03',
@@ -93,6 +95,7 @@ function BrewItem({ method, index }: { method: BrewMethod; index: number }) {
                 <img
                     src={method.image}
                     alt={method.title}
+                    onError={handleImageError}
                     className="h-full w-full object-cover brightness-95 transition-all duration-700 group-hover:scale-108 group-hover:brightness-110"
                     loading="lazy"
                 />

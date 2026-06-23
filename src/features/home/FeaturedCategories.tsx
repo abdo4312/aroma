@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { ArrowUpRight } from 'lucide-react'
+import { handleImageError } from '@/shared/utils/imageFallback'
 
 const categories = [
   {
@@ -14,7 +15,8 @@ const categories = [
     description: 'Balanced body with caramel sweetness.',
     tag: 'Espresso',
     path: '/shop-beans?category=Espresso Blends',
-    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefda?auto=format&fit=crop&w=600&q=80',
+    // FIXED: was 'aefda' (typo) → 'aefdd' (verified working in PromoSection/HowItWorks/products.ts)
+    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=600&q=80',
   },
   {
     name: 'Cold Brew Kits',
@@ -60,6 +62,7 @@ export function FeaturedCategories() {
               <img
                 src={category.image}
                 alt={category.name}
+                onError={handleImageError}
                 className="h-full w-full object-cover brightness-95 transition-all duration-700 group-hover:scale-110 group-hover:brightness-110"
                 loading="lazy"
               />

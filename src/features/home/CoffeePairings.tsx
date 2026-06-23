@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { handleImageError } from '@/shared/utils/imageFallback';
 
 const pairings = [
     {
@@ -21,7 +22,8 @@ const pairings = [
     {
         title: 'Evening Indulgence',
         desc: 'Dark Espresso Blend + milk frother. Create cafe-quality lattes and cappuccinos in your own kitchen.',
-        image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefda?w=600&q=80',
+        // FIXED: was 'aefda' (typo) → 'aefdd' (verified working)
+        image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=600&q=80',
         price: 105,
         originalPrice: 132,
         save: 20,
@@ -75,6 +77,7 @@ export function CoffeePairings() {
                             <img
                                 src={p.image}
                                 alt={p.title}
+                                onError={handleImageError}
                                 className="h-[180px] w-full object-cover transition-transform duration-600 group-hover:scale-105"
                                 loading="lazy"
                             />
