@@ -1,4 +1,4 @@
-export default {
+module.exports = {
     content: ['./index.html', './src/**/*.{ts,tsx}'],
     theme: {
         extend: {
@@ -24,22 +24,6 @@ export default {
                     light: '#8C6239',
                     cream: '#f3b079',
                 },
-            },
-                // ── Semantic Aliases ──
-                brand: {
-                    DEFAULT: '#5f3a26',
-                    dark: '#4a2e1f',
-                    light: '#8C6239',
-                    cream: '#f3b079',
-                },
-=======
-                brand: {
-                    DEFAULT: '#5f3a26',
-                    dark: '#4a2e1f',
-                    light: '#8c5c3e',
-                },
-                // شلنا الـ neutral الغلط خالص
->>>>>>> fc52df707a17d38ff4439df1fb054688b749cfb5
             },
             fontFamily: {
                 sans: ['Cairo', 'sans-serif'],
