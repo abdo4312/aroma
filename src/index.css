@@ -1,0 +1,837 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+:root {
+  font-family: "Cairo", system-ui, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: #fff;
+  color: #0f172a;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* ============================================ */
+/* ===== Coffee Blob Keyframes               ===== */
+/* ============================================ */
+
+@keyframes coffeeBlobA {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(32px, -40px, 0) scale(1.08);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes coffeeBlobB {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(-40px, 28px, 0) scale(1.12);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes coffeeBlobC {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(26px, 36px, 0) scale(1.06);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes coffeeBlobD {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  33% {
+    transform: translate3d(-25px, 35px, 0) scale(1.05);
+  }
+
+  66% {
+    transform: translate3d(15px, -20px, 0) scale(0.95);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes coffeeGradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes liquidBlobPulse {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    border-radius: 58% 42% 54% 46% / 45% 53% 47% 55%;
+  }
+
+  35% {
+    transform: translate3d(10px, -12px, 0) scale(1.1) rotate(4deg);
+    border-radius: 46% 54% 43% 57% / 56% 40% 60% 44%;
+  }
+
+  70% {
+    transform: translate3d(-12px, 14px, 0) scale(0.94) rotate(-5deg);
+    border-radius: 62% 38% 58% 42% / 39% 58% 42% 61%;
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    border-radius: 58% 42% 54% 46% / 45% 53% 47% 55%;
+  }
+}
+
+/* ============================================ */
+/* ===== General Keyframes                   ===== */
+/* ============================================ */
+
+@keyframes floatUp {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes floatSlow {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-8px) rotate(2deg);
+  }
+}
+
+@keyframes steamRise {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scaleX(1);
+  }
+
+  50% {
+    opacity: 0.6;
+    transform: translateY(-20px) scaleX(1.2);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-40px) scaleX(0.8);
+  }
+}
+
+@keyframes howDotPulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes badgePop {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.15);
+  }
+}
+
+@keyframes countUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ============================================ */
+/* ===== Coffee Blob Classes                 ===== */
+/* ============================================ */
+
+.coffee-blob {
+  pointer-events: none;
+  position: absolute;
+  z-index: 0;
+  width: 26rem;
+  height: 26rem;
+  border-radius: 999px;
+  filter: blur(58px);
+  opacity: 0.4;
+}
+
+.coffee-blob-a {
+  top: -7rem;
+  left: -8rem;
+  background: radial-gradient(circle, #ffc693 0%, #c57a47 62%, transparent 100%);
+  animation: coffeeBlobA 22s ease-in-out infinite;
+}
+
+.coffee-blob-b {
+  top: 32%;
+  right: -9rem;
+  background: radial-gradient(circle, #f0be93 0%, #8e5838 65%, transparent 100%);
+  animation: coffeeBlobB 28s ease-in-out infinite;
+}
+
+.coffee-blob-c {
+  bottom: -9rem;
+  left: 26%;
+  background: radial-gradient(circle, #f7d4b1 0%, #b5734a 60%, transparent 100%);
+  animation: coffeeBlobC 24s ease-in-out infinite;
+}
+
+.coffee-blob-d {
+  top: 40%;
+  right: -12rem;
+  background: radial-gradient(circle, #d4a574 0%, #8c6239 55%, transparent 100%);
+  animation: coffeeBlobD 26s ease-in-out infinite;
+}
+
+/* ============================================ */
+/* ===== Utility Classes                     ===== */
+/* ============================================ */
+
+.coffee-hero-gradient {
+  background: linear-gradient(120deg,
+      rgba(255, 214, 173, 0.65),
+      rgba(214, 158, 116, 0.42),
+      rgba(115, 72, 48, 0.42),
+      rgba(246, 203, 163, 0.58));
+  background-size: 280% 280%;
+  animation: coffeeGradientShift 16s ease infinite;
+}
+
+.liquid-blob {
+  pointer-events: none;
+  position: absolute;
+  border-radius: 56% 44% 51% 49% / 48% 56% 44% 52%;
+  filter: blur(12px);
+  opacity: 0.42;
+  animation: liquidBlobPulse var(--blob-duration, 20s) ease-in-out infinite;
+  animation-delay: var(--blob-delay, 0s);
+}
+
+.glass-card {
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 1.8rem;
+  box-shadow: 0 24px 70px -45px rgba(72, 45, 32, 0.85);
+}
+
+.section-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #7a5a46;
+}
+
+.section-title {
+  margin-top: 8px;
+  font-size: 32px;
+  font-weight: 700;
+  color: #3f2518;
+  line-height: 1.2;
+}
+
+@media (min-width: 768px) {
+  .section-title {
+    font-size: 40px;
+  }
+}
+
+/* ============================================ */
+/* ===== Steam / Marquee                     ===== */
+/* ============================================ */
+
+.steam-line {
+  animation: steamRise 3s ease-in-out infinite;
+}
+
+.marquee-track {
+  animation: marquee 30s linear infinite;
+}
+
+/* ============================================ */
+/* ===== Scroll Reveal Animations            ===== */
+/* ============================================ */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-up {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-32px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(32px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.visible,
+.reveal-up.visible,
+.reveal-left.visible,
+.reveal-right.visible,
+.reveal-scale.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Stagger delays */
+.delay-1 {
+  transition-delay: 0.1s;
+}
+
+.delay-2 {
+  transition-delay: 0.2s;
+}
+
+.delay-3 {
+  transition-delay: 0.3s;
+}
+
+.delay-4 {
+  transition-delay: 0.4s;
+}
+
+.delay-5 {
+  transition-delay: 0.5s;
+}
+
+.delay-6 {
+  transition-delay: 0.6s;
+}
+
+.delay-7 {
+  transition-delay: 0.7s;
+}
+
+.delay-8 {
+  transition-delay: 0.8s;
+}
+
+/* ============================================ */
+/* ===== Footer Keyframes                    ===== */
+/* ============================================ */
+
+@keyframes footerFloat1 {
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+
+  25% {
+    transform: translate3d(6px, -12px, 0) rotate(8deg);
+  }
+
+  50% {
+    transform: translate3d(-4px, -6px, 0) rotate(-4deg);
+  }
+
+  75% {
+    transform: translate3d(8px, 4px, 0) rotate(6deg);
+  }
+}
+
+@keyframes footerFloat2 {
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+
+  30% {
+    transform: translate3d(-10px, 8px, 0) rotate(-10deg);
+  }
+
+  60% {
+    transform: translate3d(6px, -8px, 0) rotate(6deg);
+  }
+}
+
+@keyframes footerFloat3 {
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+
+  40% {
+    transform: translate3d(8px, 10px, 0) rotate(12deg);
+  }
+
+  70% {
+    transform: translate3d(-6px, -4px, 0) rotate(-8deg);
+  }
+}
+
+@keyframes footerFloat4 {
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+
+  35% {
+    transform: translate3d(-8px, -10px, 0) rotate(-6deg);
+  }
+
+  65% {
+    transform: translate3d(10px, 6px, 0) rotate(10deg);
+  }
+}
+
+@keyframes heartPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.3);
+  }
+}
+
+@keyframes footerThankYou {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes socialBounce {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(-3px) scale(1.1);
+  }
+
+  100% {
+    transform: translateY(-0.5px) scale(1);
+  }
+}
+
+/* ============================================ */
+/* ===== Footer Classes                      ===== */
+/* ============================================ */
+
+.footer-float-1 {
+  animation: footerFloat1 12s ease-in-out infinite;
+}
+
+.footer-float-2 {
+  animation: footerFloat2 16s ease-in-out infinite;
+}
+
+.footer-float-3 {
+  animation: footerFloat3 14s ease-in-out infinite;
+}
+
+.footer-float-4 {
+  animation: footerFloat4 18s ease-in-out infinite;
+}
+
+.footer-heart-pulse {
+  animation: heartPulse 2s ease-in-out infinite;
+}
+
+.footer-thank-you {
+  animation: footerThankYou 0.4s ease-out;
+}
+
+.footer-link:hover .footer-link-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.footer-contact-item:hover {
+  box-shadow: 0 6px 24px -8px rgba(72, 45, 32, 0.35);
+}
+
+.footer-social-icon:hover {
+  animation: socialBounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.footer-shimmer-sweep {
+  background: linear-gradient(115deg,
+      transparent 0%,
+      transparent 35%,
+      rgba(212, 175, 110, 0.12) 42%,
+      rgba(245, 230, 190, 0.2) 47%,
+      rgba(212, 175, 110, 0.12) 52%,
+      transparent 58%,
+      transparent 100%);
+  background-size: 300% 100%;
+  background-position: 100% 0;
+  transition: background-position 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.group:hover .footer-shimmer-sweep {
+  background-position: -100% 0;
+}
+
+/* ============================================ */
+/* ===== Beans Hero Banner Animations        ===== */
+/* ============================================ */
+
+@keyframes beansFloat1 {
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+
+  25% {
+    transform: translate3d(5px, -10px, 0) rotate(8deg);
+  }
+
+  50% {
+    transform: translate3d(-3px, -5px, 0) rotate(-4deg);
+  }
+
+  75% {
+    transform: translate3d(6px, 3px, 0) rotate(5deg);
+  }
+}
+
+@keyframes beansFloat2 {
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+
+  30% {
+    transform: translate3d(-8px, 6px, 0) rotate(-8deg);
+  }
+
+  60% {
+    transform: translate3d(5px, -6px, 0) rotate(5deg);
+  }
+}
+
+@keyframes beansFloat3 {
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+
+  40% {
+    transform: translate3d(6px, 8px, 0) rotate(10deg);
+  }
+
+  70% {
+    transform: translate3d(-5px, -3px, 0) rotate(-6deg);
+  }
+}
+
+@keyframes beansFloat4 {
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+
+  35% {
+    transform: translate3d(-7px, -8px, 0) rotate(-5deg);
+  }
+
+  65% {
+    transform: translate3d(8px, 5px, 0) rotate(8deg);
+  }
+}
+
+@keyframes beansSteamRise {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scaleX(1);
+  }
+
+  50% {
+    opacity: 0.5;
+    transform: translateY(-16px) scaleX(1.3);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-32px) scaleX(0.7);
+  }
+}
+
+.beans-float-1 {
+  animation: beansFloat1 10s ease-in-out infinite;
+}
+
+.beans-float-2 {
+  animation: beansFloat2 14s ease-in-out infinite;
+}
+
+.beans-float-3 {
+  animation: beansFloat3 12s ease-in-out infinite;
+}
+
+.beans-float-4 {
+  animation: beansFloat4 16s ease-in-out infinite;
+}
+
+.beans-steam-line {
+  animation: beansSteamRise 3s ease-in-out infinite;
+}
+
+/* ============================================ */
+/* ===== Beans Page Animations               ===== */
+/* ============================================ */
+
+.beans-shimmer-sweep {
+  background: linear-gradient(115deg,
+      transparent 0%,
+      transparent 35%,
+      rgba(212, 175, 110, 0.1) 42%,
+      rgba(245, 230, 190, 0.18) 47%,
+      rgba(212, 175, 110, 0.1) 52%,
+      transparent 58%,
+      transparent 100%);
+  background-size: 300% 100%;
+  background-position: 100% 0;
+  transition: background-position 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.group:hover .beans-shimmer-sweep {
+  background-position: -100% 0;
+}
+
+.beans-skeleton {
+  background: linear-gradient(110deg,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0.35) 40%,
+      rgba(255, 255, 255, 0.15) 60%,
+      rgba(255, 255, 255, 0.15) 100%);
+  background-size: 200% 100%;
+  animation: beansSkeletonShimmer 1.8s ease-in-out infinite;
+}
+
+@keyframes beansSkeletonShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ============================================ */
+/* ===== Reduced Motion                      ===== */
+/* ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .coffee-blob,
+  .coffee-hero-gradient,
+  .liquid-blob,
+  .marquee-track,
+  .steam-line,
+  .footer-float-1,
+  .footer-float-2,
+  .footer-float-3,
+  .footer-float-4,
+  .footer-heart-pulse,
+  .footer-shimmer-sweep,
+  .beans-float-1,
+  .beans-float-2,
+  .beans-float-3,
+  .beans-float-4,
+  .beans-steam-line,
+  .beans-shimmer-sweep,
+  .beans-skeleton {
+    animation: none !important;
+  }
+
+  .reveal,
+  .reveal-up,
+  .reveal-left,
+  .reveal-right,
+  .reveal-scale {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ============================================ */
+/* ===== Beans Hero Badges Animation         ===== */
+/* ============================================ */
+
+@keyframes beansBadgeFloat1 {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes beansBadgeFloat2 {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.beans-badge-1 {
+  animation: beansBadgeFloat1 3s ease-in-out infinite;
+}
+
+.beans-badge-2 {
+  animation: beansBadgeFloat2 4s ease-in-out infinite;
+}
