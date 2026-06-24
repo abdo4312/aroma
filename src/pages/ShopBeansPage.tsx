@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router-dom'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useProducts } from '@/features/products/useProducts'
 import { ProductCard } from '@/features/products/ProductCard'
 import {
