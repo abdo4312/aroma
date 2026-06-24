@@ -133,12 +133,12 @@ export function CoffeeDetails() {
       </nav>
 
       {/* ═════════ HERO IMAGE SECTION ═════════ */}
-      <section className="relative w-full aspect-square md:aspect-[16/9] md:max-h-[60vh] overflow-hidden">
+      <section className="relative w-full aspect-square md:aspect-[16/9] md:max-h-[60vh] overflow-hidden rounded-b-[3.5rem] shadow-2xl shadow-coffee-900/10">
         {!imageError ? (
           <img
             src={productImage}
             alt={product.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transform scale-105"
             onError={() => setImageError(true)}
           />
         ) : (
