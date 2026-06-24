@@ -1,250 +1,411 @@
-import {
-  Coffee,
-  Instagram,
-  Mail,
-  MapPin,
-  Phone,
-  ArrowRight,
-  Heart,
-} from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Coffee, Search, ShoppingBag, User, X, Menu } from "lucide-react";
+import { useCartStore } from '@/store/useCartStore';
+import { formatCurrency } from '@/shared/utils/formatCurrency';
+import { useProducts } from '../products/useProducts';
+import type { Product } from '@/features/products/product.types';
 
-/* ───────── Data ───────── */
+const navItems = [
+  { label: 'Beans', to: '/shop-beans' },
+  { label: 'Booking', to: '/book-table' },
+  { label: 'Brew Gear', to: '/brew-gear' },
+  { label: 'Gift Cards', to: '/gift-cards' },
+];
 
-const quickLinks = [
-  { name: 'About Us', path: '/about' },
-  { name: 'Shipping', path: '/shipping' },
-  { name: 'Brew Guide', path: '/brew-guide' },
-  { name: 'Support', path: '/support' },
-]
+export function HomeHeader() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const totalItems = useCartStore((state) => state.getTotalItems());
 
-const categories = [
-  { name: 'Signature Beans', path: '/shop-beans' },
-  { name: 'Build Your Box', path: '/build-your-box' },
-  { name: 'Gift Cards', path: '/gift-cards' },
-  { name: 'Brew Gear', path: '/brew-gear' },
-]
+  const { products = [] } = useProducts();
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [query, setQuery] = useState('');
 
-const socials = [
-  { icon: Instagram, label: 'Instagram', href: 'https://instagram.com/aromacornercoffee' },
-  { icon: Mail, label: 'Email', href: 'mailto:hello@aromacorner.shop' },
-  { icon: Phone, label: 'Phone', href: 'tel:+201234567890' },
-]
+  // Refs for focus management
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const mobileMenuTriggerRef = useRef<HTMLButtonElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
-/* ───────── Sub-components ───────── */
+  const searchResults = query
+    ? (products as Product[]).filter((p: Product) =>
+      p.name.toLowerCase().includes(query.toLowerCase()) ||
+      p.category.toLowerCase().includes(query.toLowerCase())
+    )
+    : [];
 
-function FloatingBean({ className }: { className?: string }) {
+  // ESC closes both search and mobile menu
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsSearchOpen(false);
+        setIsMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Lock body scroll when any overlay is open
+  useEffect(() => {
+    const isAnyOverlayOpen = isSearchOpen || isMobileMenuOpen;
+    document.body.style.overflow = isAnyOverlayOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isSearchOpen, isMobileMenuOpen]);
+
+  // Focus management: when mobile menu opens, focus the panel
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      const timer = setTimeout(() => {
+        const firstFocusable = mobileMenuRef.current?.querySelector<HTMLElement>(
+          'a, button, input, [tabindex]:not([tabindex="-1"])'
+        );
+        firstFocusable?.focus();
+      }, 50);
+      return () => clearTimeout(timer);
+    } else {
+      mobileMenuTriggerRef.current?.focus();
+    }
+  }, [isMobileMenuOpen]);
+
+  // Focus search input when it opens
+  useEffect(() => {
+    if (isSearchOpen) {
+      const timer = setTimeout(() => searchInputRef.current?.focus(), 50);
+      return () => clearTimeout(timer);
+    }
+  }, [isSearchOpen]);
+
+  // Tab-trap inside mobile menu
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const handleTabKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+      const panel = mobileMenuRef.current;
+      if (!panel) return;
+      const focusables = panel.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input, [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    window.addEventListener('keydown', handleTabKey);
+    return () => window.removeEventListener('keydown', handleTabKey);
+  }, [isMobileMenuOpen]);
+
+  const handleSelectProduct = (id: string) => {
+    setIsSearchOpen(false);
+    setQuery('');
+    navigate(`/coffee/${id}`);
+  };
+
+  const closeMobileMenu = () => setIsMobileMenuOpen(false);
+
+  // Check if a nav item is active
+  const isActive = (to: string) => location.pathname === to;
+
   return (
-    <div className={`footer-float-bean pointer-events-none absolute ${className ?? ''}`}>
-      <Coffee className="h-5 w-5 text-[#c4956a]/30" />
-    </div>
-  )
-}
-
-/* ───────── Main Component ───────── */
-
-export function HomeFooter() {
-  return (
-    <footer className="footer-wrapper group relative overflow-hidden rounded-[2rem] border border-white/45 bg-white/22 p-1 shadow-[0_28px_80px_-38px_rgba(59,34,19,0.7)] backdrop-blur-xl">
-      {/* ── Gradient Overlay ── */}
-      <div className="coffee-hero-gradient absolute inset-0" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.45),transparent_55%)]" />
-
-      {/* ── Gold/Silver Shimmer Sweep on Hover ── */}
-      <div className="footer-shimmer-sweep absolute inset-0 z-10 pointer-events-none" />
-
-      {/* ── Floating Decorative Beans ── */}
-      <FloatingBean className="top-8 left-6 footer-float-1" />
-      <FloatingBean className="top-16 right-12 footer-float-2" />
-      <FloatingBean className="bottom-20 left-1/3 footer-float-3" />
-      <FloatingBean className="bottom-10 right-1/4 footer-float-4" />
-
-      {/* ── Liquid Blobs ── */}
-      <div
-        className="liquid-blob absolute -bottom-14 left-8 h-28 w-28 bg-[#7d4930]/30"
-        style={{ '--blob-duration': '24s', '--blob-delay': '-7s' } as React.CSSProperties}
-      />
-      <div
-        className="liquid-blob absolute -right-8 top-6 h-20 w-20 bg-[#f0b57f]/40"
-        style={{ '--blob-duration': '18s', '--blob-delay': '-3s' } as React.CSSProperties}
-      />
-      <div
-        className="liquid-blob absolute bottom-1/3 left-1/2 h-16 w-16 bg-[#c4956a]/25"
-        style={{ '--blob-duration': '22s', '--blob-delay': '-11s' } as React.CSSProperties}
-      />
-
-      {/* ── Content ──
-          Mobile fixes:
-          - padding reduced on mobile (p-5 → sm:p-6 → md:p-10)
-          - text-left is now the default (was text-right on mobile, which
-            looked odd for an English LTR site — Arabic sites use RTL) */}
-      <div className="relative z-20 grid gap-8 rounded-[1.7rem] bg-[linear-gradient(125deg,rgba(255,255,255,0.55),rgba(255,255,255,0.12))] p-5 text-left sm:p-6 md:grid-cols-[1.3fr_1fr_1fr_1.2fr] md:p-10">
-
-        {/* ── Column 1: Brand ── */}
-        <div>
-          {/* Logo */}
-          <div className="inline-flex items-center gap-2.5 rounded-xl border border-white/50 bg-white/40 px-3.5 py-2 shadow-[0_8px_25px_-12px_rgba(72,45,32,0.5)] backdrop-blur-md">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[#5f3a26] text-[#fff2e2] shadow-[0_4px_12px_-4px_rgba(95,58,38,0.6)]">
-              <Coffee className="h-5 w-5" />
-            </span>
-            <span className="text-sm font-bold tracking-[0.12em] text-[#4c2d1e]">Aroma Corner</span>
-          </div>
-
-          {/* Tagline */}
-          <p className="mt-5 max-w-sm text-sm leading-relaxed text-[#5d3e2c]/90">
-            Specialty coffee for slow mornings and bold afternoons.
-            We roast in small batches and ship fresh to your door —
-            because every cup deserves to be extraordinary.
-          </p>
-
-          {/* Social Icons — left-aligned on all screens now (was right on mobile) */}
-          <div className="mt-5 flex items-center gap-2">
-            {socials.map((s) => (
-              <a
-                key={s.label}
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={s.label}
-                className="footer-social-icon inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/50 bg-white/30 text-[#5d3a27] shadow-[0_4px_14px_-6px_rgba(72,45,32,0.4)] backdrop-blur-md transition-all duration-300 hover:bg-white/50 hover:shadow-[0_8px_22px_-6px_rgba(72,45,32,0.5)] hover:-translate-y-0.5"
+    <>
+      {/* ═══════════════════════════════════════════════════
+          SEARCH OVERLAY
+         ═══════════════════════════════════════════════════ */}
+      {isSearchOpen && (
+        <div
+          className="fixed inset-0 z-[200] flex items-start justify-center pt-[15vh] px-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Product search"
+        >
+          <div className="absolute inset-0 bg-[#2e1a12]/50 backdrop-blur-md" onClick={() => setIsSearchOpen(false)} />
+          <div className="relative w-full max-w-2xl bg-white/95 backdrop-blur-2xl rounded-[2rem] sm:rounded-[3rem] shadow-2xl border border-white/60 overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div className="flex items-center gap-3 p-5 sm:p-8 border-b border-[#8C6239]/10">
+              <Search className="text-[#8C6239] shrink-0" size={24} aria-hidden="true" />
+              <label htmlFor="header-search" className="sr-only">Search products</label>
+              <input
+                id="header-search"
+                ref={searchInputRef}
+                type="text"
+                placeholder="Search for coffee, gear..."
+                className="flex-1 bg-transparent text-lg sm:text-2xl text-[#4A3B32] placeholder-[#6B4423]/40 outline-none font-black min-w-0"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+              <button
+                onClick={() => setIsSearchOpen(false)}
+                className="shrink-0 p-2 rounded-full hover:bg-rose-50 text-rose-500 transition-colors"
+                aria-label="Close search"
               >
-                <s.icon className="h-4 w-4" />
-              </a>
+                <X size={24} aria-hidden="true" />
+              </button>
+            </div>
+            <div className="max-h-[60vh] overflow-y-auto p-4 sm:p-6 custom-scrollbar" role="listbox" aria-label="Search results">
+              {searchResults.length === 0 && query && (
+                <p className="text-center text-[#6B4423]/60 py-8 text-sm">No products match "{query}"</p>
+              )}
+              {searchResults.map((product: Product) => (
+                <button
+                  key={product.id}
+                  onClick={() => handleSelectProduct(product.id)}
+                  className="w-full flex items-center gap-4 sm:gap-6 p-4 sm:p-5 rounded-2xl sm:rounded-[2rem] hover:bg-[#8C6239]/5 transition-all text-left group"
+                  role="option"
+                  aria-selected="false"
+                >
+                  <img src={product.images[0]} alt={product.name} className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover shadow-md group-hover:scale-105 transition-transform shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-base sm:text-lg font-black text-[#4A3B32] group-hover:text-[#8C6239] transition-colors truncate">{product.name}</h4>
+                    <p className="text-xs sm:text-sm font-bold text-[#6B4423]/50 uppercase tracking-widest">{product.category}</p>
+                  </div>
+                  <span className="text-base sm:text-lg font-black text-[#4A3B32] shrink-0">{formatCurrency(product.price)}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════════════════
+          MOBILE MENU DRAWER (app-like, slide-in from right)
+         ═══════════════════════════════════════════════════ */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 z-[150] md:hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Mobile navigation menu"
+        >
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-[#2e1a12]/60 backdrop-blur-md animate-in fade-in duration-300"
+            onClick={closeMobileMenu}
+            aria-hidden="true"
+          />
+
+          {/* Panel — slides in from the right, app-like */}
+          <div
+            ref={mobileMenuRef}
+            className="absolute right-0 top-0 h-full w-[88%] max-w-sm bg-gradient-to-b from-[#FAF7F2] to-white shadow-2xl flex flex-col animate-in slide-in-from-right duration-300"
+          >
+            {/* Header row: Logo + Close */}
+            <div className="flex items-center justify-between p-5 border-b border-[#8C6239]/15 bg-white/60 backdrop-blur-sm">
+              <Link
+                to="/"
+                onClick={closeMobileMenu}
+                className="inline-flex items-center gap-3"
+                aria-label="Aroma Corner home"
+              >
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-[#4A3B32] text-[#D4B895]" aria-hidden="true">
+                  <Coffee className="h-5 w-5" />
+                </span>
+                <span className="text-lg font-black tracking-tighter uppercase text-[#4A3B32]">Aroma Corner</span>
+              </Link>
+              <button
+                onClick={closeMobileMenu}
+                className="p-2 rounded-full hover:bg-[#8C6239]/10 text-[#4A3B32] transition-colors"
+                aria-label="Close menu"
+              >
+                <X size={24} aria-hidden="true" />
+              </button>
+            </div>
+
+            {/* Nav links — app-like full-width rows */}
+            <nav
+              className="flex-1 overflow-y-auto p-4"
+              aria-label="Mobile main navigation"
+            >
+              <p className="mb-3 px-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#7a5a46]">Menu</p>
+              <ul className="space-y-1.5">
+                {navItems.map((item) => (
+                  <li key={item.label}>
+                    <Link
+                      to={item.to}
+                      onClick={closeMobileMenu}
+                      className={`flex items-center justify-between rounded-2xl px-4 py-4 text-base font-bold transition-all active:scale-[0.98] ${isActive(item.to)
+                          ? 'bg-[#4A3B32] text-white shadow-lg'
+                          : 'text-[#3f2518] hover:bg-[#8C6239]/8 active:bg-[#8C6239]/15'
+                        }`}
+                    >
+                      {item.label}
+                      <span aria-hidden="true" className={isActive(item.to) ? 'text-white/70' : 'text-[#8C6239]'}>→</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Divider */}
+              <div className="my-5 h-px bg-[#8C6239]/15" aria-hidden="true" />
+
+              {/* Account + Cart */}
+              <p className="mb-3 px-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#7a5a46]">Account</p>
+              <ul className="space-y-1.5">
+                <li>
+                  <Link
+                    to="/login"
+                    onClick={closeMobileMenu}
+                    className={`flex items-center gap-3 rounded-2xl px-4 py-3.5 text-base font-semibold transition-all active:scale-[0.98] ${isActive('/login')
+                        ? 'bg-[#4A3B32] text-white'
+                        : 'text-[#3f2518] hover:bg-[#8C6239]/8'
+                      }`}
+                  >
+                    <User className="h-5 w-5" aria-hidden="true" />
+                    Login / Register
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/cart"
+                    onClick={closeMobileMenu}
+                    className={`flex items-center justify-between rounded-2xl px-4 py-3.5 text-base font-semibold transition-all active:scale-[0.98] ${isActive('/cart')
+                        ? 'bg-[#4A3B32] text-white'
+                        : 'text-[#3f2518] hover:bg-[#8C6239]/8'
+                      }`}
+                  >
+                    <span className="flex items-center gap-3">
+                      <ShoppingBag className="h-5 w-5" aria-hidden="true" />
+                      Cart
+                    </span>
+                    {totalItems > 0 && (
+                      <span
+                        className="flex h-6 min-w-6 items-center justify-center rounded-full bg-[#8C6239] px-2 text-xs font-bold text-white"
+                        aria-label={`${totalItems} item${totalItems === 1 ? '' : 's'} in cart`}
+                      >
+                        {totalItems}
+                      </span>
+                    )}
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+
+            {/* Footer of the drawer */}
+            <div className="p-5 border-t border-[#8C6239]/15 bg-white/40">
+              <p className="text-xs text-[#7a5a46] text-center leading-relaxed">
+                Freshly roasted. Delivered to your door.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════════════════
+          MAIN HEADER
+          Mobile: app-like compact bar (sticky, full-width feel)
+          Desktop: same glassmorphism floating card as before
+         ═══════════════════════════════════════════════════ */}
+      <header className="sticky top-0 z-[100] md:top-4 md:mx-4 md:mb-10 bg-white/70 md:bg-white/40 md:rounded-[2.8rem] md:border md:border-white/60 backdrop-blur-2xl md:shadow-2xl md:overflow-hidden transition-all duration-500">
+        {/* Animated Background Blobs (desktop only) */}
+        <div className="liquid-blob absolute -left-9 -top-8 h-32 w-32 bg-[#D4B895]/40 blur-3xl hidden md:block" style={{ '--blob-duration': '19s' } as React.CSSProperties} aria-hidden="true" />
+        <div className="liquid-blob absolute right-16 -top-10 h-32 w-32 bg-[#8C6239]/20 blur-3xl hidden md:block" style={{ '--blob-duration': '24s' } as React.CSSProperties} aria-hidden="true" />
+
+        {/* Mobile: bottom border separator / Desktop: padding */}
+        <div className="relative flex items-center justify-between gap-3 px-4 py-3 md:px-10 md:py-5 md:gap-6">
+
+          {/* ═══ Logo ═══ */}
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2.5 md:gap-4 rounded-2xl md:bg-white/50 md:px-5 md:py-3 md:backdrop-blur-sm transition-all hover:scale-105 active:scale-95 md:shadow-sm md:border md:border-white shrink-0"
+            aria-label="Aroma Corner home"
+          >
+            <span className="inline-flex h-10 w-10 md:h-11 md:w-11 items-center justify-center rounded-xl bg-[#4A3B32] text-[#D4B895] shadow-lg shrink-0" aria-hidden="true">
+              <Coffee className="h-5 w-5 md:h-6 md:w-6" />
+            </span>
+            <span className="text-lg md:text-xl font-black tracking-tighter uppercase text-[#4A3B32]">
+              Aroma Corner
+            </span>
+          </Link>
+
+          {/* ═══ Desktop Navigation ═══ */}
+          <nav
+            className="hidden items-center gap-3 rounded-[1.8rem] border border-white/40 bg-white/20 p-2 md:flex shadow-inner backdrop-blur-md"
+            aria-label="Main navigation"
+          >
+            {navItems.map((item) => (
+              <Link
+                key={item.label}
+                to={item.to}
+                className={`relative group px-6 lg:px-10 py-3 lg:py-5 transition-all duration-300 ${isActive(item.to) ? 'opacity-100' : 'opacity-70 hover:opacity-100'
+                  }`}
+              >
+                <span className={`relative z-10 text-xs lg:text-[15px] font-black uppercase tracking-[0.2em] lg:tracking-[0.25em] transition-colors ${isActive(item.to) ? 'text-[#8C6239]' : 'text-[#4A3B32] group-hover:text-[#8C6239]'
+                  }`}>
+                  {item.label}
+                </span>
+                <span className={`absolute bottom-2 lg:bottom-3 left-1/2 -translate-x-1/2 h-[2.5px] bg-[#8C6239] transition-all duration-300 ${isActive(item.to) ? 'w-1/2 opacity-100' : 'w-0 group-hover:w-1/2 opacity-70'
+                  }`} aria-hidden="true" />
+              </Link>
             ))}
+          </nav>
+
+          {/* ═══ Action Buttons ═══ */}
+          <div className="flex items-center gap-2 sm:gap-3 md:gap-4 shrink-0">
+            {/* Search button */}
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              className="inline-flex h-11 w-11 md:h-14 md:w-14 items-center justify-center rounded-2xl border border-white/60 bg-white/40 md:backdrop-blur-sm text-[#4A3B32] transition-all hover:-translate-y-1 hover:bg-white hover:shadow-lg active:scale-90"
+              aria-label="Open search"
+            >
+              <Search className="h-5 w-5 md:h-6 md:w-6" aria-hidden="true" />
+            </button>
+
+            {/* Login link — visible on all screens (smaller on mobile) */}
+            <Link
+              to="/login"
+              className={`inline-flex h-11 w-11 md:h-14 md:w-14 items-center justify-center rounded-2xl border transition-all hover:-translate-y-1 hover:bg-white hover:shadow-lg active:scale-90 ${isActive('/login')
+                  ? 'bg-[#4A3B32] text-white border-[#4A3B32]'
+                  : 'border-white/60 bg-white/40 md:backdrop-blur-sm text-[#4A3B32]'
+                }`}
+              aria-label="Login or register"
+            >
+              <User className="h-5 w-5 md:h-6 md:w-6" aria-hidden="true" />
+            </Link>
+
+            {/* Cart link */}
+            <Link
+              to="/cart"
+              className={`relative inline-flex items-center gap-2 sm:gap-3 md:gap-4 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-2xl active:scale-95 px-3 sm:px-4 md:px-8 md:py-4.5 h-11 md:h-auto py-0 text-[10px] sm:text-[11px] md:text-[12px] font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] ${isActive('/cart')
+                  ? 'bg-[#5F3A26] text-white'
+                  : 'bg-[#4A3B32] text-white hover:bg-[#5F3A26]'
+                }`}
+              aria-label={`Cart with ${totalItems} item${totalItems === 1 ? '' : 's'}`}
+            >
+              <ShoppingBag className="h-5 w-5 md:h-6 md:w-6" aria-hidden="true" />
+              <span className="hidden sm:inline">Cart</span>
+
+              {totalItems > 0 && (
+                <span
+                  className="absolute -right-1.5 -top-1.5 sm:-right-2 sm:-top-2 md:-right-3 md:-top-3 flex h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 items-center justify-center rounded-full bg-[#D4B895] text-[11px] sm:text-[12px] font-black text-[#4A3B32] ring-2 sm:ring-3 md:ring-4 ring-[#FAF7F2] shadow-xl animate-bounce"
+                  aria-hidden="true"
+                >
+                  {totalItems}
+                </span>
+              )}
+            </Link>
+
+            {/* ═══ Mobile hamburger button ═══ */}
+            <button
+              ref={mobileMenuTriggerRef}
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/60 bg-white/40 text-[#4A3B32] transition-all hover:bg-white hover:shadow-lg active:scale-90 md:hidden"
+              aria-label="Open navigation menu"
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-menu-drawer"
+            >
+              <Menu className="h-5 w-5" aria-hidden="true" />
+            </button>
           </div>
         </div>
 
-        {/* ── Column 2: Quick Links ── */}
-        <div>
-          <h3 className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-[#6f4f3b]">
-            <span className="inline-block h-px w-4 bg-[#c4956a]/60" />
-            Quick Links
-          </h3>
-          <ul className="mt-4 space-y-2.5">
-            {quickLinks.map((item) => (
-              <li key={item.name}>
-                <Link
-                  to={item.path}
-                  className="footer-link group/link inline-flex items-center gap-1.5 text-sm text-[#4f2f21] transition-all duration-300 hover:text-[#7a4d35] hover:translate-x-[-4px]"
-                >
-                  <ArrowRight className="h-3 w-3 opacity-0 -translate-x-1 transition-all duration-300 group-hover/link:opacity-100 group-hover/link:translate-x-0" />
-                  {item.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* ── Column 3: Categories ── */}
-        <div>
-          <h3 className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-[#6f4f3b]">
-            <span className="inline-block h-px w-4 bg-[#c4956a]/60" />
-            Categories
-          </h3>
-          <ul className="mt-4 space-y-2.5">
-            {categories.map((item) => (
-              <li key={item.name}>
-                <Link
-                  to={item.path}
-                  className="footer-link group/link inline-flex items-center gap-1.5 text-sm text-[#4f2f21] transition-all duration-300 hover:text-[#7a4d35] hover:translate-x-[-4px]"
-                >
-                  <ArrowRight className="h-3 w-3 opacity-0 -translate-x-1 transition-all duration-300 group-hover/link:opacity-100 group-hover/link:translate-x-0" />
-                  {item.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* ── Column 4: Contact Card ── */}
-        <div>
-          <h3 className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-[#6f4f3b]">
-            <span className="inline-block h-px w-4 bg-[#c4956a]/60" />
-            Get in Touch
-          </h3>
-          <div className="mt-4 space-y-3">
-            <a
-              href="https://maps.google.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="footer-contact-item group/contact flex items-start gap-3 rounded-xl border border-transparent p-2.5 transition-all duration-300 hover:border-white/40 hover:bg-white/25"
-            >
-              <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#5f3a26]/10 text-[#7d4930] transition-colors duration-300 group-hover/contact:bg-[#5f3a26]/20">
-                <MapPin className="h-4 w-4" />
-              </span>
-              <div>
-                <p className="text-sm font-medium text-[#4f2f21]">Downtown Roastery</p>
-                <p className="text-xs text-[#6f503d]/80">Cairo, Egypt</p>
-              </div>
-            </a>
-
-            <a
-              href="mailto:hello@aromacorner.shop"
-              className="footer-contact-item group/contact flex items-start gap-3 rounded-xl border border-transparent p-2.5 transition-all duration-300 hover:border-white/40 hover:bg-white/25"
-            >
-              <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#5f3a26]/10 text-[#7d4930] transition-colors duration-300 group-hover/contact:bg-[#5f3a26]/20">
-                <Mail className="h-4 w-4" />
-              </span>
-              <div>
-                <p className="text-sm font-medium text-[#4f2f21]">hello@aromacorner.shop</p>
-                <p className="text-xs text-[#6f503d]/80">We reply within 24h</p>
-              </div>
-            </a>
-
-            <a
-              href="tel:+201234567890"
-              className="footer-contact-item group/contact flex items-start gap-3 rounded-xl border border-transparent p-2.5 transition-all duration-300 hover:border-white/40 hover:bg-white/25"
-            >
-              <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#5f3a26]/10 text-[#7d4930] transition-colors duration-300 group-hover/contact:bg-[#5f3a26]/20">
-                <Phone className="h-4 w-4" />
-              </span>
-              <div>
-                <p className="text-sm font-medium text-[#4f2f21]">+20 123 456 7890</p>
-                <p className="text-xs text-[#6f503d]/80">Mon–Sat, 9 AM – 8 PM</p>
-              </div>
-            </a>
-
-            <a
-              href="https://instagram.com/aromacornercoffee"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="footer-contact-item group/contact flex items-start gap-3 rounded-xl border border-transparent p-2.5 transition-all duration-300 hover:border-white/40 hover:bg-white/25"
-            >
-              <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#5f3a26]/10 text-[#7d4930] transition-colors duration-300 group-hover/contact:bg-[#5f3a26]/20">
-                <Instagram className="h-4 w-4" />
-              </span>
-              <div>
-                <p className="text-sm font-medium text-[#4f2f21]">@aromacornercoffee</p>
-                <p className="text-xs text-[#6f503d]/80">Follow our journey</p>
-              </div>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Bottom Bar ── */}
-      <div className="relative z-20 mx-2 mb-1 flex flex-col items-center justify-between gap-3 rounded-2xl border-t border-white/30 bg-white/15 px-5 py-4 backdrop-blur-md sm:flex-row sm:px-6">
-        <p className="flex items-center gap-1.5 text-xs text-[#6f503d]">
-          © 2026 Aroma Corner. Crafted with
-          <Heart className="inline h-3 w-3 text-[#b5544a] footer-heart-pulse" />
-          in Cairo
-        </p>
-        <div className="flex items-center gap-4 text-xs text-[#6f503d]/70">
-          <Link
-            to="/privacy-policy"
-            className="transition-colors duration-300 hover:text-[#5d3a27]"
-          >
-            Privacy Policy
-          </Link>
-          <span className="h-3 w-px bg-[#6f503d]/25" />
-          <Link
-            to="/terms-of-service"
-            className="transition-colors duration-300 hover:text-[#5d3a27]"
-          >
-            Terms of Service
-          </Link>
-        </div>
-      </div>
-    </footer>
-  )
+        {/* Mobile bottom border (subtle separator) */}
+        <div className="md:hidden h-px bg-gradient-to-r from-transparent via-[#8C6239]/15 to-transparent" aria-hidden="true" />
+      </header>
+    </>
+  );
 }
