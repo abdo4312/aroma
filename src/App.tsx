@@ -8,6 +8,7 @@ import { NotFoundPage } from '@/pages/NotFoundPage';
 import { QuickViewModal } from '@/features/products/QuickViewModal';
 import { HomeHeader } from '@/features/home/HomeHeader';
 import { HomeFooter } from '@/features/home/HomeFooter';
+import { MobileBottomNav } from '@/features/home/MobileBottomNav';
 import { ProtectedRoute } from '@/shared/components/ProtectedRoute';
 import { setOnUnauthorized } from '@/services/apiClient';
 import ErrorBoundary from '@/shared/components/ErrorBoundary';
@@ -30,6 +31,9 @@ const BrewGuidePage = lazy(() => import('@/pages/BrewGuidePage').then(m => ({ de
 const PrivacyPolicyPage = lazy(() => import('@/pages/PrivacyPolicyPage').then(m => ({ default: m.PrivacyPolicyPage })));
 const TermsOfServicePage = lazy(() => import('@/pages/TermsOfServicePage').then(m => ({ default: m.TermsOfServicePage })));
 
+// Mobile-only "More" page (hosts footer content on small screens)
+const MorePage = lazy(() => import('@/pages/MorePage').then(m => ({ default: m.MorePage })));
+
 // Product & Shopping
 const ShopBeansPage = lazy(() => import('@/pages/ShopBeansPage').then(m => ({ default: m.ShopBeansPage })));
 const CoffeeDetails = lazy(() => import('@/pages/CoffeeDetailsPage').then(m => ({ default: m.CoffeeDetails })));
@@ -49,7 +53,7 @@ const CheckoutPage = lazy(() => import('@/pages/CheckoutPage').then(m => ({ defa
 const OrderSuccessPage = lazy(() => import('@/pages/OrderSuccessPage').then(m => ({ default: m.OrderSuccessPage })));
 const ProfilePage = lazy(() => import('@/pages/ProfilePage').then(m => ({ default: m.ProfilePage })));
 
-// Auth pages that should NOT show header/footer
+// Auth pages that should NOT show header/footer/bottom-nav
 const AUTH_PAGES = ['/login', '/register', '/forgot-password'];
 
 function ScrollToTop() {
@@ -81,12 +85,16 @@ function AppLayout() {
       <ScrollToTop />
       {!isAuthPage && <HomeHeader />}
 
-      <main className="min-h-screen">
-        {/* Single Suspense boundary wraps all lazy routes.
-                    Each chunk load shows the PageLoader until ready.
-                    Errors (e.g. network failure mid-load) bubble up to
-                    the top-level ErrorBoundary, which lets the user
-                    hard-reload to recover. */}
+      {/*
+        Main content area.
+        - pb-16 on mobile reserves space for the fixed MobileBottomNav
+          (which is ~64px tall + iOS safe-area). The MobileBottomNav component
+          ALSO renders an in-flow spacer, but having pb-16 here as a safety net
+          ensures even non-spaced content (e.g. sticky checkout buttons) doesn't
+          get hidden behind the bar.
+        - md:pb-0 removes the padding on desktop (no bottom nav there).
+      */}
+      <main className="min-h-screen pb-16 md:pb-0">
         <Suspense fallback={<PageLoader label="Loading" />}>
           <Routes>
             {/* Public Routes — HomePage eager (landing page) */}
@@ -97,6 +105,9 @@ function AppLayout() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/support" element={<SupportPage />} />
             <Route path="/shipping" element={<ShippingPage />} />
+
+            {/* Mobile-only More page (hosts footer content) */}
+            <Route path="/more" element={<MorePage />} />
 
             {/* Product & Shopping Routes */}
             <Route path="/shop-beans" element={<ShopBeansPage />} />
@@ -156,7 +167,21 @@ function AppLayout() {
         </Suspense>
       </main>
 
+      {/*
+        HomeFooter — desktop only.
+        On mobile, the footer content lives in /more (MorePage) and the
+        MobileBottomNav provides navigation instead.
+      */}
       {!isAuthPage && <HomeFooter />}
+
+      {/*
+        MobileBottomNav — mobile only.
+        Rendered after HomeFooter so its z-[90] sits above footer content
+        but below modals (z-100 header, z-200 search overlay).
+        Gated by !isAuthPage so it doesn't appear on login/register/forgot.
+      */}
+      {!isAuthPage && <MobileBottomNav />}
+
       <QuickViewModal />
     </>
   );
