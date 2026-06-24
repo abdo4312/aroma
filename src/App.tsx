@@ -53,8 +53,10 @@ const CheckoutPage = lazy(() => import('@/pages/CheckoutPage').then(m => ({ defa
 const OrderSuccessPage = lazy(() => import('@/pages/OrderSuccessPage').then(m => ({ default: m.OrderSuccessPage })));
 const ProfilePage = lazy(() => import('@/pages/ProfilePage').then(m => ({ default: m.ProfilePage })));
 
-// Auth pages that should NOT show header/footer/bottom-nav
+// Pages that should NOT show header/footer/bottom-nav
 const AUTH_PAGES = ['/login', '/register', '/forgot-password'];
+const NO_NAV_PAGES = ['/checkout', '/order-success'];
+const NO_BOTTOM_NAV_PAGES = ['/checkout', '/order-success'];
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -79,11 +81,14 @@ function AppLayout() {
   }, [navigate]);
 
   const isAuthPage = AUTH_PAGES.includes(location.pathname);
+  const isNoNavPage = NO_NAV_PAGES.includes(location.pathname);
+  const isCoffeeDetails = location.pathname.startsWith('/coffee/');
+  const isNoBottomNavPage = NO_BOTTOM_NAV_PAGES.includes(location.pathname) || isCoffeeDetails;
 
   return (
     <>
       <ScrollToTop />
-      {!isAuthPage && <HomeHeader />}
+      {!isAuthPage && !isNoNavPage && !isCoffeeDetails && <HomeHeader />}
 
       {/*
         Main content area.
@@ -172,7 +177,7 @@ function AppLayout() {
         On mobile, the footer content lives in /more (MorePage) and the
         MobileBottomNav provides navigation instead.
       */}
-      {!isAuthPage && <HomeFooter />}
+      {!isAuthPage && !isNoNavPage && !isCoffeeDetails && <HomeFooter />}
 
       {/*
         MobileBottomNav — mobile only.
@@ -180,7 +185,7 @@ function AppLayout() {
         but below modals (z-100 header, z-200 search overlay).
         Gated by !isAuthPage so it doesn't appear on login/register/forgot.
       */}
-      {!isAuthPage && <MobileBottomNav />}
+      {!isAuthPage && !isNoBottomNavPage && <MobileBottomNav />}
 
       <QuickViewModal />
     </>
