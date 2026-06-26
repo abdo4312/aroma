@@ -6,7 +6,6 @@ import { userService } from '@/api/services/user.service';
 import { ordersService } from '@/api/services/orders.service';
 import { useAuth } from '@/shared/hooks/useAuth';
 import {
-    User,
     Package,
     MapPin,
     LogOut,
@@ -16,7 +15,6 @@ import {
     Save,
     Bell,
     CreditCard,
-    Heart,
     HelpCircle,
     ChevronRight,
     ShoppingBag,
