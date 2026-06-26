@@ -17,30 +17,26 @@ export function HomePage() {
       <div className="coffee-blob coffee-blob-b" aria-hidden="true" />
       <div className="coffee-blob coffee-blob-c" aria-hidden="true" />
 
-      {/*
-        Section spacing:
-        - Mobile (base): gap-16 = 64px between sections — generous, app-like rhythm
-          so sections don't feel cramped or stacked on top of each other.
-        - Tablet (sm): gap-20 = 80px
-        - Desktop (md+): gap-20 = 80px (kept the previous comfortable spacing)
+      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col px-4 py-6 md:px-8 md:py-10">
 
-        Top/bottom padding:
-        - py-6 on mobile, md:py-10 on desktop — gives the header breathing room
-          below it so PromoSection tail + FeaturedProducts head don't collide
-          with the sticky header (per Task 6 fix).
-      */}
-      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col gap-16 px-4 py-6 sm:gap-20 md:gap-20 md:px-8 md:py-10">
-        <HeroBanner />
-        <ScrollingMarquee />
-        <FeaturedCategories />
-        <FeaturedProducts />
-        <HowItWorks />
-        <WhyChooseUs />
-        <BrewingMethods />
-        <CoffeePairings />
-        <CoffeeStories />
-        <PromoSection />
-        <Newsletter />
+        {/* ═══ Group 1: Banner + Categories (tight on mobile so both are visible) ═══ */}
+        <div className="flex flex-col gap-4 sm:gap-6 md:gap-20">
+          <HeroBanner />
+          <FeaturedCategories />
+        </div>
+
+        {/* ═══ Group 2: Rest of the sections (generous spacing) ═══ */}
+        <div className="flex flex-col gap-16 mt-16 sm:gap-20 md:gap-20 md:mt-20">
+          <ScrollingMarquee />
+          <FeaturedProducts />
+          <HowItWorks />
+          <WhyChooseUs />
+          <BrewingMethods />
+          <CoffeePairings />
+          <CoffeeStories />
+          <PromoSection />
+          <Newsletter />
+        </div>
       </div>
     </main>
   )

@@ -105,17 +105,17 @@ function FeaturedCard({ story }: { story: Story }) {
                 className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                 loading="lazy"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#2f1f16]/90 via-[#2f1f16]/40 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#2f1f16]/60 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-coffee-950/90 via-coffee-950/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-coffee-950/60 via-transparent to-transparent" />
             <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
             <div className="relative flex h-full flex-col justify-end p-6 md:p-8">
                 <div className="mb-4 flex flex-wrap items-center gap-2">
                     <div className="flex items-center gap-1 rounded-full border border-white/25 bg-white/10 px-3 py-1 backdrop-blur-md">
                         {Array.from({ length: story.rating }).map((_, i) => (
-                            <Star key={i} className="h-3 w-3 fill-[#f3b079] text-[#f3b079]" />
+                            <Star key={i} className="h-3 w-3 fill-brand-cream text-brand-cream" />
                         ))}
                     </div>
-                    <span className="rounded-full border border-[#8C6239]/40 bg-[#8C6239]/25 px-3 py-1 text-xs font-medium text-[#f3b079] backdrop-blur-md">
+                    <span className="rounded-full border border-coffee-500/40 bg-coffee-500/25 px-3 py-1 text-xs font-medium text-brand-cream backdrop-blur-md">
                         {story.blend}
                     </span>
                     <span className="rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-medium text-white/80 backdrop-blur-md">
@@ -151,19 +151,19 @@ function FeaturedCard({ story }: { story: Story }) {
 function StoryCard({ story }: { story: Story }) {
     return (
         <article className="group reveal-up relative overflow-hidden rounded-2xl border border-white/40 bg-white/20 p-5 backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_50px_-25px_rgba(72,45,32,0.75)]">
-            <div className="absolute left-0 top-0 h-full w-1 rounded-r-full bg-gradient-to-b from-[#8C6239] to-[#f3b079] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-            <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-[#8C6239]/0 blur-2xl transition-all duration-500 group-hover:bg-[#8C6239]/20" />
+            <div className="absolute left-0 top-0 h-full w-1 rounded-r-full bg-gradient-to-b from-coffee-500 to-brand-cream opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-coffee-500/0 blur-2xl transition-all duration-500 group-hover:bg-coffee-500/20" />
             <div className="relative">
-                <Quote className="mb-3 h-5 w-5 text-[#8C6239]/50" />
+                <Quote className="mb-3 h-5 w-5 text-coffee-500/50" />
                 <div className="mb-3 flex items-center gap-0.5">
                     {Array.from({ length: story.rating }).map((_, i) => (
-                        <Star key={i} className="h-3.5 w-3.5 fill-[#f3b079] text-[#f3b079]" />
+                        <Star key={i} className="h-3.5 w-3.5 fill-brand-cream text-brand-cream" />
                     ))}
                 </div>
-                <p className="mb-4 text-sm leading-relaxed text-[#4a2e1f]">
+                <p className="mb-4 text-sm leading-relaxed text-coffee-800">
                     {story.quote}
                 </p>
-                <span className="mb-4 inline-block rounded-full border border-[#8C6239]/25 bg-[#8C6239]/10 px-3 py-1 text-xs font-medium text-[#7a5a46]">
+                <span className="mb-4 inline-block rounded-full border border-coffee-500/25 bg-coffee-500/10 px-3 py-1 text-xs font-medium text-coffee-600">
                     {story.blend}
                 </span>
                 <div className="flex items-center gap-3">
@@ -174,8 +174,8 @@ function StoryCard({ story }: { story: Story }) {
                         loading="lazy"
                     />
                     <div>
-                        <p className="text-sm font-semibold text-[#3f2518]">{story.name}</p>
-                        <div className="flex items-center gap-1 text-xs text-[#7a5a46]">
+                        <p className="text-sm font-semibold text-coffee-900">{story.name}</p>
+                        <div className="flex items-center gap-1 text-xs text-coffee-600">
                             <MapPin className="h-3 w-3" />
                             {story.location}
                         </div>
@@ -212,59 +212,60 @@ function StoryCarousel() {
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
         >
-            <div className="relative overflow-hidden rounded-3xl border border-white/45 bg-white/20 p-5 backdrop-blur-xl">
-                <div className="mb-3 flex items-center gap-0.5">
+            <div className="relative overflow-hidden rounded-2xl border border-white/45 bg-white/20 p-4 backdrop-blur-xl">
+                <div className="mb-2 flex items-center gap-0.5">
                     {Array.from({ length: story.rating }).map((_, i) => (
-                        <Star key={i} className="h-3.5 w-3.5 fill-[#f3b079] text-[#f3b079]" />
+                        <Star key={i} className="h-3 w-3 fill-brand-cream text-brand-cream" />
                     ))}
                 </div>
-                <p className="mb-4 text-sm leading-relaxed text-[#4a2e1f]">
+                <Quote className="mb-2 h-4 w-4 text-coffee-500/50" />
+                <p className="mb-3 text-[13px] leading-relaxed text-coffee-800">
                     {story.quote}
                 </p>
-                <span className="mb-4 inline-block rounded-full border border-[#8C6239]/25 bg-[#8C6239]/10 px-3 py-1 text-xs font-medium text-[#7a5a46]">
+                <span className="mb-3 inline-block rounded-full border border-coffee-500/25 bg-coffee-500/10 px-2.5 py-0.5 text-[10px] font-medium text-coffee-600">
                     {story.blend}
                 </span>
-                <div className="mb-4 flex items-center gap-3">
+                <div className="mb-3 flex items-center gap-2.5">
                     <img
                         src={story.avatar}
                         alt={story.name}
-                        className="h-10 w-10 rounded-full border border-white/50 object-cover"
+                        className="h-9 w-9 rounded-full border border-white/50 object-cover"
                         loading="lazy"
                     />
-                    <div>
-                        <p className="text-sm font-semibold text-[#3f2518]">{story.name}</p>
-                        <div className="flex items-center gap-1 text-xs text-[#7a5a46]">
-                            <MapPin className="h-3 w-3" />
-                            {story.role} · {story.location}
+                    <div className="min-w-0">
+                        <p className="text-xs font-semibold text-coffee-900 truncate">{story.name}</p>
+                        <div className="flex items-center gap-1 text-[10px] text-coffee-600">
+                            <MapPin className="h-2.5 w-2.5" />
+                            <span className="truncate">{story.role} · {story.location}</span>
                         </div>
                     </div>
                 </div>
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                         {stories.map((_, i) => (
                             <button
                                 key={i}
                                 onClick={() => setActive(i)}
-                                className={`h-2 rounded-full transition-all duration-300 ${i === active ? 'w-6 bg-[#8C6239]' : 'w-2 bg-[#8C6239]/30'
+                                className={`h-1.5 rounded-full transition-all duration-300 ${i === active ? 'w-5 bg-coffee-500' : 'w-1.5 bg-coffee-500/30'
                                     }`}
                                 aria-label={`Go to story ${i + 1}`}
                             />
                         ))}
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-1.5">
                         <button
                             onClick={prev}
-                            className="rounded-full border border-white/50 bg-white/30 p-2 backdrop-blur-md transition hover:bg-white/50"
+                            className="rounded-full border border-white/50 bg-white/30 p-1.5 backdrop-blur-md transition hover:bg-white/50 active:scale-95"
                             aria-label="Previous story"
                         >
-                            <ChevronLeft className="h-4 w-4 text-[#5d3a27]" />
+                            <ChevronLeft className="h-3.5 w-3.5 text-coffee-700" />
                         </button>
                         <button
                             onClick={next}
-                            className="rounded-full border border-white/50 bg-white/30 p-2 backdrop-blur-md transition hover:bg-white/50"
+                            className="rounded-full border border-white/50 bg-white/30 p-1.5 backdrop-blur-md transition hover:bg-white/50 active:scale-95"
                             aria-label="Next story"
                         >
-                            <ChevronRight className="h-4 w-4 text-[#5d3a27]" />
+                            <ChevronRight className="h-3.5 w-3.5 text-coffee-700" />
                         </button>
                     </div>
                 </div>
@@ -302,24 +303,31 @@ export function CoffeeStories() {
     const regularStories = stories.filter((s) => !s.featured);
 
     return (
-        <section ref={sectionRef} className="rounded-[1.8rem] border border-white/40 bg-white/20 p-6 shadow-[0_24px_70px_-45px_rgba(72,45,32,0.85)] backdrop-blur-xl md:p-8">
-            <div className="reveal-up mb-8 text-center">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7a5a46]">our community</p>
-                <h2 className="mt-2 text-3xl font-bold text-[#3f2518]">Coffee Stories</h2>
-                <p className="mx-auto mt-3 max-w-xl text-sm text-[#654634] md:text-base">
+        <section
+            ref={sectionRef}
+            className="rounded-[1.5rem] sm:rounded-[1.8rem] border border-white/40 bg-white/20 p-4 sm:p-6 shadow-[0_24px_70px_-45px_rgba(72,45,32,0.85)] backdrop-blur-xl md:p-8"
+        >
+            <div className="reveal-up mb-5 sm:mb-8 text-left sm:text-center">
+                <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.16em] sm:tracking-[0.18em] text-coffee-600">
+                    our community
+                </p>
+                <h2 className="mt-1 sm:mt-2 text-xl sm:text-3xl font-bold text-coffee-900">
+                    Coffee Stories
+                </h2>
+                <p className="mt-2 sm:mt-3 max-w-xl sm:mx-auto text-[12px] sm:text-sm text-coffee-700 md:text-base">
                     Real voices from our community of coffee lovers — their rituals, their blends, their story.
                 </p>
             </div>
 
-            <div className="reveal-scale mb-8 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
+            <div className="reveal-scale mb-5 sm:mb-8 grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-4 md:gap-4">
                 {storyStats.map((stat) => (
                     <div
                         key={stat.label}
-                        className="flex flex-col items-center gap-2 rounded-2xl border border-white/45 bg-white/25 p-4 backdrop-blur-md"
+                        className="flex flex-col items-center gap-1 sm:gap-2 rounded-xl sm:rounded-2xl border border-white/45 bg-white/25 p-2.5 sm:p-4 backdrop-blur-md"
                     >
-                        <stat.icon className="h-5 w-5 text-[#8C6239]" />
-                        <p className="text-2xl font-bold text-[#3f2518]">{stat.value}</p>
-                        <p className="text-xs text-[#7a5a46]">{stat.label}</p>
+                        <stat.icon className="h-4 w-4 sm:h-5 sm:w-5 text-coffee-500" />
+                        <p className="text-base sm:text-2xl font-bold text-coffee-900">{stat.value}</p>
+                        <p className="text-[9px] sm:text-xs text-coffee-600 text-center leading-tight">{stat.label}</p>
                     </div>
                 ))}
             </div>
@@ -333,10 +341,10 @@ export function CoffeeStories() {
 
             <StoryCarousel />
 
-            <div className="reveal-up mt-8 flex items-center justify-center gap-2 text-[#8C6239]/30">
-                <div className="h-px w-12 bg-[#8C6239]/20" />
-                <Coffee className="h-5 w-5" />
-                <div className="h-px w-12 bg-[#8C6239]/20" />
+            <div className="reveal-up mt-5 sm:mt-8 flex items-center justify-center gap-2 text-coffee-500/30">
+                <div className="h-px w-8 sm:w-12 bg-coffee-500/20" />
+                <Coffee className="h-4 w-4 sm:h-5 sm:w-5" />
+                <div className="h-px w-8 sm:w-12 bg-coffee-500/20" />
             </div>
         </section>
     );

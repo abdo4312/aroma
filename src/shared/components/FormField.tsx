@@ -2,19 +2,12 @@ import { useId, type ReactNode, type InputHTMLAttributes, type TextareaHTMLAttri
 import type { UseFormRegisterReturn } from 'react-hook-form';
 import { cn } from '@/shared/utils/cn';
 
-/* ───────── Shared Base Props (common to input + textarea) ─────────
-   NOTE: labelClassName lives HERE so it is visible on the union type
-   itself, NOT only on one branch. This is the correct TS pattern for
-   discriminated unions — anything you want to pass for both variants
-   must live on the shared base, not on the discriminated branch. */
 type BaseProps = {
   label?: string;
   error?: string;
   icon?: ReactNode;
   register?: UseFormRegisterReturn;
-  /** Optional explicit id; if omitted a stable useId() is generated. */
   id?: string;
-  /** Override or extend the label's className (e.g. "text-white" on dark backgrounds). */
   labelClassName?: string;
 };
 
@@ -29,6 +22,7 @@ type InputAsTextarea = BaseProps &
   };
 
 type FormFieldProps = InputAsInput | InputAsTextarea;
+
 
 export function FormField({
   label,
